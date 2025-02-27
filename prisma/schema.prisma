@@ -12,3 +12,22 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Nodes {
+  id   Int    @id @default(autoincrement())
+  name String
+  Logs Logs[]
+}
+
+model Logs {
+  id        Int            @id @default(autoincrement())
+  node_id   Int
+  node      Nodes          @relation(fields: [node_id], references: [id])
+  timestamp DateTime
+  status    CapacityStatus
+}
+
+enum CapacityStatus {
+  FULL
+  EMPTY
+}

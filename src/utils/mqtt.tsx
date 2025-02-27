@@ -3,11 +3,11 @@
 import { useEffect, useState } from "react";
 import mqtt from "mqtt";
 
-const MQTT_BROKER = "mqtt://broker.netpie.io/mqtt";
+const MQTT_BROKER = "mqtt://broker.netpie.io";
 const CLIENT_ID = "fb21da34-f7b0-4719-8c62-7372a12c35b7";
 const TOKEN = "yYfeyi9TUkx71C6wwzM1P37i5cg31WPN";
 const SECRET = "kPE1jvLfBwcoTES9HTo2ZsMW5SneEQ97";
-const TOPIC = "@msg/status";
+const TOPIC = "@msg/+";
 
 export default function MQTTComponent() {
   const [message, setMessage] = useState<string | null>(null);
@@ -17,7 +17,6 @@ export default function MQTTComponent() {
       clientId: CLIENT_ID,
       username: TOKEN,
       password: SECRET,
-      protocol: "tcp",
     });
 
     client.on("connect", () => {

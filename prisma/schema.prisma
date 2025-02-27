@@ -14,9 +14,11 @@ datasource db {
 }
 
 model Nodes {
-  id   Int    @id @default(autoincrement())
-  name String
-  Logs Logs[]
+  id     Int    @id @default(autoincrement())
+  client String
+  token  String
+  name   String
+  Logs   Logs[]
 }
 
 model Logs {

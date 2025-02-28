@@ -13,18 +13,26 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Nodes {
+model Node {
   id     Int    @id @default(autoincrement())
+  areaId Int
+  area   Area   @relation(fields: [areaId], references: [id])
   client String
   token  String
   name   String
-  Logs   Logs[]
+  Log    Log[]
 }
 
-model Logs {
+model Area {
+  id   Int    @id @default(autoincrement())
+  name String
+  Node Node[]
+}
+
+model Log {
   id        Int            @id @default(autoincrement())
   node_id   Int
-  node      Nodes          @relation(fields: [node_id], references: [id])
+  node      Node           @relation(fields: [node_id], references: [id])
   timestamp DateTime
   status    CapacityStatus
 }

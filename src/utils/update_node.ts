@@ -14,8 +14,6 @@ export async function update_node(id?: number, name?: string, clientId?: string,
             where: { id },
             data: {
                 name,
-                client: clientId,
-                token
             },
         });
 

@@ -1,24 +1,22 @@
 "use client";
 
 import { add_node } from "@/utils/add_node";
-import { useManagementContext } from "@/utils/managementContext";
+import { useManagementContext } from "@/utils/context/managementContext";
 import { useActionState } from "react";
 
 export default function NodeForm() {
     const data = useManagementContext();
     const saveNode = async (prevState: any, formData: FormData) => {
         const nodeName = formData.get("name") as string;
-        const clientId = formData.get("clientId") as string;
-        const token = formData.get("token") as string;
         const areaId = formData.get("areaId") as string;
 
-        if (!nodeName || !clientId || !token || !areaId)
+        if (!nodeName || !areaId)
             return { success: false, message: "Fill all data" };
         
         // Simulating an API request (replace with actual API call)
         try {
             // Simulated API response
-            await add_node(nodeName, clientId, token, parseInt(areaId));
+            await add_node(nodeName, parseInt(areaId));
 
             return { success: true, message: "Node saved successfully!" };
         } catch (error) {
@@ -48,32 +46,7 @@ export default function NodeForm() {
 
                     <label className="form-control w-full max-w-xs">
                         <div className="label">
-                            <span className="label-text">Client ID</span>
-                        </div>
-                        <input
-                            type="text"
-                            name="clientId"
-                            placeholder="Type here"
-                            className="input input-bordered w-full max-w-xs"
-                            required
-                        />
-                    </label>
-
-                    <label className="form-control w-full max-w-xs">
-                        <div className="label">
-                            <span className="label-text">Token</span>
-                        </div>
-                        <input
-                            type="text"
-                            name="token"
-                            placeholder="Type here"
-                            className="input input-bordered w-full max-w-xs"
-                            required
-                        />
-                    </label>
-                    <label className="form-control w-full max-w-xs">
-                        <div className="label">
-                            <span className="label-text">Pick the best fantasy franchise</span>
+                            <span className="label-text">Area</span>
                         </div>
                         <select className="select select-bordered" name="areaId">
                             <option aria-disabled>Pick one</option>
@@ -81,9 +54,6 @@ export default function NodeForm() {
                                 <option key={a.id} value={a.id}>{a.name}</option>
                             ))}
                         </select>
-                        <div className="label">
-                            <span className="label-text-alt">create area</span>
-                        </div>
                     </label>
                     <div className="space-x-2">
                         <button type="submit" className="btn btn-primary btn-sm">Save</button>

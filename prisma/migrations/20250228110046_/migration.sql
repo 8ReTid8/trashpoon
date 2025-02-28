@@ -1,12 +1,10 @@
 -- CreateEnum
-CREATE TYPE "CapacityStatus" AS ENUM ('FULL', 'EMPTY');
+CREATE TYPE "LockStatus" AS ENUM ('LOCK', 'UNLOCK');
 
 -- CreateTable
 CREATE TABLE "Node" (
     "id" SERIAL NOT NULL,
     "areaId" INTEGER NOT NULL,
-    "client" TEXT NOT NULL,
-    "token" TEXT NOT NULL,
     "name" TEXT NOT NULL,
 
     CONSTRAINT "Node_pkey" PRIMARY KEY ("id")
@@ -25,7 +23,8 @@ CREATE TABLE "Log" (
     "id" SERIAL NOT NULL,
     "node_id" INTEGER NOT NULL,
     "timestamp" TIMESTAMP(3) NOT NULL,
-    "status" "CapacityStatus" NOT NULL,
+    "capacity" INTEGER NOT NULL,
+    "status" "LockStatus" NOT NULL,
 
     CONSTRAINT "Log_pkey" PRIMARY KEY ("id")
 );

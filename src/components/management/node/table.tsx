@@ -1,7 +1,7 @@
 "use client";
 
 import { Node } from "@prisma/client";
-import { useManagementContext } from "@/utils/managementContext";
+import { useManagementContext } from "@/utils/context/managementContext";
 import { useActionState } from "react";
 import { useState } from "react";
 import Link from "next/link";
@@ -56,8 +56,6 @@ export default function NodeTable() {
                         <th>Id</th>
                         <th>Name</th>
                         <th>Area</th>
-                        <th>ClientID</th>
-                        <th>Token</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -67,8 +65,6 @@ export default function NodeTable() {
                             <td>{n.id}</td>
                             <td>{n.name}</td>
                             <td>{n.areaId}</td>
-                            <td>{n.client}</td>
-                            <td>{n.token}</td>
                             <td className="space-x-2">
                                 <button
                                     className="btn btn-sm"
@@ -102,28 +98,6 @@ export default function NodeTable() {
                                     type="text"
                                     name="name"
                                     defaultValue={editingNode.name}
-                                    className="input input-bordered w-full"
-                                    required
-                                />
-                            </label>
-
-                            <label className="form-control">
-                                <span className="label-text">Client ID</span>
-                                <input
-                                    type="text"
-                                    name="clientId"
-                                    defaultValue={editingNode.client}
-                                    className="input input-bordered w-full"
-                                    required
-                                />
-                            </label>
-
-                            <label className="form-control">
-                                <span className="label-text">Token</span>
-                                <input
-                                    type="text"
-                                    name="token"
-                                    defaultValue={editingNode.token}
                                     className="input input-bordered w-full"
                                     required
                                 />

@@ -17,8 +17,6 @@ model Node {
   id     Int    @id @default(autoincrement())
   areaId Int
   area   Area   @relation(fields: [areaId], references: [id])
-  client String
-  token  String
   name   String
   Log    Log[]
 }
@@ -34,10 +32,11 @@ model Log {
   node_id   Int
   node      Node           @relation(fields: [node_id], references: [id])
   timestamp DateTime
-  status    CapacityStatus
+  capacity  Int
+  status    LockStatus
 }
 
-enum CapacityStatus {
-  FULL
-  EMPTY
+enum LockStatus {
+  LOCK
+  UNLOCK
 }

@@ -3,10 +3,10 @@
 import prisma from "./prisma";
 import { revalidatePath } from "next/cache";
 
-export async function add_node(name: string, clientId: string, token: string, areaId: number) {
+export async function add_node(name: string, areaId: number) {
     try {
         // Ensure data is valid before interacting with the database
-        if (!name || !clientId || !token || !areaId) {
+        if (!name || !areaId) {
             throw new Error("All fields are required.");
         }
 
@@ -14,8 +14,6 @@ export async function add_node(name: string, clientId: string, token: string, ar
         const newNode = await prisma.node.create({
             data: {
                 name,
-                client: clientId,
-                token,
                 areaId,
             },
         });

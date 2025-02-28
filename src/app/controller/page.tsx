@@ -2,15 +2,14 @@ import Controller from "@/components/controller/controller";
 import prisma from "@/utils/prisma";
 
 export default async function ControllerPage() {
-  const nodes = await prisma.node.findMany();
-  const areas = await prisma.area.findMany();
-
+  const areas = await prisma.area.findMany({
+    include: {
+      Node: true
+    }
+  });
   return (
     <div>
-      <Controller data={{
-        Node: nodes,
-        Area: areas
-      }} />
+      <Controller data={areas} />
     </div>
   )
 }

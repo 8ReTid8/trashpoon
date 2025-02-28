@@ -1,7 +1,7 @@
 "use client";
 
 import { Area } from "@prisma/client";
-import { useManagementContext } from "@/utils/managementContext";
+import { useManagementContext } from "@/utils/context/managementContext";
 import { useActionState } from "react";
 import { useState } from "react";
 import { delete_area } from "@/utils/delete_area";

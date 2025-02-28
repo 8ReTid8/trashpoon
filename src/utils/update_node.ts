@@ -3,9 +3,9 @@
 import { revalidatePath } from "next/cache";
 import prisma from "./prisma";
 
-export async function update_node(id?: number, name?: string, clientId?: string, token?: string) {
+export async function update_node(id?: number, name?: string, areaId?: number) {
     try {
-        if (!id || !name || !clientId || !token) {
+        if (!id || !name || !areaId) {
             throw new Error("All fields are required.");
         }
 
@@ -14,6 +14,7 @@ export async function update_node(id?: number, name?: string, clientId?: string,
             where: { id },
             data: {
                 name,
+                areaId
             },
         });
 

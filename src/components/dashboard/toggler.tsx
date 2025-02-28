@@ -1,21 +1,20 @@
-// pages/index.js
 import React, { useEffect, useState } from 'react';
 import { Lock, Unlock, Trash2 } from 'lucide-react';
 import { useDashboardContext } from '@/utils/context/dashboardContext';
 import { AreaBinDashboard } from '@/types/type';
+import { subscribeToMqtt } from '@/utils/mqtt/subscribe';
 
 export default function Toggler() {
-    // Sample initial data for trash bins
     const data = useDashboardContext();
     const [areas, setAreas] = useState<AreaBinDashboard[]>([]);
 
     useEffect(() => {
         if (!data) return;
-        console.log(data);
-        const newArea = data.map((area) => ({
+
+        const newAreas: AreaBinDashboard[] = data.map(area => ({
             id: area.id,
             name: area.name,
-            bins: area.Node?.map((bin) => ({
+            bins: area.Node?.map(bin => ({
                 id: bin.id,
                 name: bin.name,
                 capacity: 0,
@@ -23,29 +22,78 @@ export default function Toggler() {
             })) || []
         }));
 
-        setAreas(newArea);
-    }, [data]); // Runs every time `data` changes
+        setAreas(newAreas);
 
-    // Function to toggle the lock status of a bin
-    const toggleLock = (areaId: number, binId: number) => {
-        setAreas(areas.map(area => {
-            if (area.id === areaId) {
-                return {
-                    ...area,
-                    bins: area.bins.map(bin => {
-                        if (bin.id === binId) {
-                            return { ...bin, locked: !bin.locked };
-                        }
-                        return bin;
-                    })
-                };
+        // Subscribe and fetch initial data
+        newAreas.forEach(area => {
+            area.bins.forEach(bin => {
+                subscribeToMqtt(area.id, bin.id);
+                fetchLatestMessage(area.id, bin.id);
+            });
+        });
+
+        // Start interval to fetch data every second
+        const interval = setInterval(() => {
+            newAreas.forEach(area => {
+                area.bins.forEach(bin => {
+                    fetchLatestMessage(area.id, bin.id);
+                });
+            });
+        }, 1000); // Fetch every 1 second
+
+        return () => clearInterval(interval); // Cleanup on unmount
+
+    }, [data]);
+
+    const fetchLatestMessage = async (areaId: number, deviceId: number): Promise<void> => {
+        try {
+            const response = await fetch(`http://localhost:5175/latest-message?areaId=${areaId}&deviceId=${deviceId}`);
+            const result = await response.json();
+
+            if (result.message !== "No messages received yet") {
+                const { capacity, locked } = JSON.parse(result.message);
+                updateBinData(areaId, deviceId, capacity, locked);
             }
-            return area;
-        }));
+        } catch (error) {
+            console.error('Error fetching bin data:', error);
+        }
     };
 
-    // Function to get progress class based on capacity
-    const getProgressClass = (capacity: number) => {
+    const updateBinData = (areaId: number, deviceId: number, capacity: number, locked: boolean): void => {
+        setAreas(prevAreas =>
+            prevAreas.map(area =>
+                area.id === areaId
+                    ? {
+                        ...area,
+                        bins: area.bins.map(bin =>
+                            bin.id === deviceId
+                                ? bin.capacity !== capacity || bin.locked !== locked // Update only if data changes
+                                    ? { ...bin, capacity, locked }
+                                    : bin
+                                : bin
+                        )
+                    }
+                    : area
+            )
+        );
+    };
+
+    const toggleLock = (areaId: number, binId: number): void => {
+        setAreas(prevAreas =>
+            prevAreas.map(area =>
+                area.id === areaId
+                    ? {
+                        ...area,
+                        bins: area.bins.map(bin =>
+                            bin.id === binId ? { ...bin, locked: !bin.locked } : bin
+                        )
+                    }
+                    : area
+            )
+        );
+    };
+
+    const getProgressClass = (capacity: number): string => {
         if (capacity < 40) return "progress-success";
         if (capacity < 75) return "progress-warning";
         return "progress-error";
@@ -65,10 +113,7 @@ export default function Toggler() {
 
                             <div className="card-body p-4">
                                 {area.bins.map((bin) => (
-                                    <div
-                                        key={bin.id}
-                                        className="mb-4 p-4 border border-base-300 rounded-box hover:bg-base-200 transition"
-                                    >
+                                    <div key={bin.id} className="mb-4 p-4 border border-base-300 rounded-box hover:bg-base-200 transition">
                                         <div className="flex justify-between items-center mb-2">
                                             <div className="flex items-center">
                                                 <Trash2 className="mr-2" size={18} />

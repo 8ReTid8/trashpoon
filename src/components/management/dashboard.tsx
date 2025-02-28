@@ -8,7 +8,7 @@ export default function Dashboard({ data }: { data: managementType }) {
     return (
         <div>
             <ManagementContext.Provider value={data}>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid md:grid-cols-2 sm:grid-cols-1 gap-2 pb-20">
                     <NodeManager />
                     <AreaManager />
                 </div>

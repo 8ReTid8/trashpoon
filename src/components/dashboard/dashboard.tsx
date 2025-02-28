@@ -5,7 +5,7 @@ import { AreaWithNode } from '@/types/type';
 import { DashboardContext } from '@/utils/context/dashboardContext';
 
 
-export default function Controller({ data }: { data: AreaWithNode[] }) {
+export default function Dashboard({ data }: { data: AreaWithNode[] }) {
 	return (
 		<div>
 			<DashboardContext.Provider value={data}>

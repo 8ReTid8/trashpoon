@@ -1,7 +1,8 @@
-import Controller from "@/components/controller/controller";
+
+import Dashboard from "@/components/dashboard/dashboard";
 import prisma from "@/utils/prisma";
 
-export default async function ControllerPage() {
+export default async function DashboardPage() {
   const areas = await prisma.area.findMany({
     include: {
       Node: true
@@ -9,7 +10,7 @@ export default async function ControllerPage() {
   });
   return (
     <div>
-      <Controller data={areas} />
+      <Dashboard data={areas} />
     </div>
   )
 }

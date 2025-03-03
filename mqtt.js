@@ -44,6 +44,22 @@ app.post('/subscribe', (req, res) => {
   });
 });
 
+app.post('/publish', (req, res) => {
+  const { areaName, deviceName, action } = req.body;
+  if (!areaName || !deviceName || !action) {
+    return res.status(400).json({ error: 'Missing areaName, deviceName or action' });
+  }
+
+  const topic = `@msg/${areaName}/${deviceName}`;
+  client.publish(topic, (err) => {
+    if (err) {
+      return res.status(500).json({ error: 'Subscription failed' });
+    }
+    console.log(`Subscribed to topic: ${topic}`);
+    res.status(200).json({ message: `Subscribed to ${topic}` });
+  });
+});
+
 app.get('/latest-message', (req, res) => {
   const { areaName, deviceName } = req.query;
   if (!areaName || !deviceName) {

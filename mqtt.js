@@ -29,12 +29,12 @@ client.on('message', (topic, message) => {
 });
 
 app.post('/subscribe', (req, res) => {
-  const { areaId, deviceId } = req.body;
-  if (!areaId || !deviceId) {
-    return res.status(400).json({ error: 'Missing areaId or deviceId' });
+  const { areaName, deviceName } = req.body;
+  if (!areaName || !deviceName) {
+    return res.status(400).json({ error: 'Missing areaName or deviceName' });
   }
 
-  const topic = `@msg/${areaId}/${deviceId}`;
+  const topic = `@msg/${areaName}/${deviceName}`;
   client.subscribe(topic, (err) => {
     if (err) {
       return res.status(500).json({ error: 'Subscription failed' });
@@ -45,12 +45,12 @@ app.post('/subscribe', (req, res) => {
 });
 
 app.get('/latest-message', (req, res) => {
-  const { areaId, deviceId } = req.query;
-  if (!areaId || !deviceId) {
-    return res.status(400).json({ error: 'Missing areaId or deviceId' });
+  const { areaName, deviceName } = req.query;
+  if (!areaName || !deviceName) {
+    return res.status(400).json({ error: 'Missing areaName or deviceName' });
   }
 
-  const topic = `@msg/${areaId}/${deviceId}`;
+  const topic = `@msg/${areaName}/${deviceName}`;
   const message = latestMessages[topic] || 'No messages received yet';
   res.status(200).json({ topic, message });
 });

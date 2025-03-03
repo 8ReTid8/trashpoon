@@ -27,8 +27,8 @@ export default function Toggler() {
         // Subscribe and fetch initial data
         newAreas.forEach(area => {
             area.bins.forEach(bin => {
-                subscribeToMqtt(area.id, bin.id);
-                fetchLatestMessage(area.id, bin.id);
+                subscribeToMqtt(area.name, bin.name);
+                fetchLatestMessage(area.name, bin.name);
             });
         });
 
@@ -36,38 +36,37 @@ export default function Toggler() {
         const interval = setInterval(() => {
             newAreas.forEach(area => {
                 area.bins.forEach(bin => {
-                    fetchLatestMessage(area.id, bin.id);
+                    fetchLatestMessage(area.name, bin.name);
                 });
             });
-        }, 1000); // Fetch every 1 second
+        }, 1000);
 
-        return () => clearInterval(interval); // Cleanup on unmount
-
+        return () => clearInterval(interval);
     }, [data]);
 
-    const fetchLatestMessage = async (areaId: number, deviceId: number): Promise<void> => {
+    const fetchLatestMessage = async (areaName: string, deviceName: string): Promise<void> => {
         try {
-            const response = await fetch(`http://localhost:5175/latest-message?areaId=${areaId}&deviceId=${deviceId}`);
+            const response = await fetch(`http://localhost:5175/latest-message?areaName=${areaName}&deviceName=${deviceName}`);
             const result = await response.json();
 
             if (result.message !== "No messages received yet") {
                 const { capacity, locked } = JSON.parse(result.message);
-                updateBinData(areaId, deviceId, capacity, locked);
+                updateBinData(areaName, deviceName, capacity, locked);
             }
         } catch (error) {
             console.error('Error fetching bin data:', error);
         }
     };
 
-    const updateBinData = (areaId: number, deviceId: number, capacity: number, locked: boolean): void => {
+    const updateBinData = (areaName: string, deviceName: string, capacity: number, locked: boolean): void => {
         setAreas(prevAreas =>
             prevAreas.map(area =>
-                area.id === areaId
+                area.name === areaName
                     ? {
                         ...area,
                         bins: area.bins.map(bin =>
-                            bin.id === deviceId
-                                ? bin.capacity !== capacity || bin.locked !== locked // Update only if data changes
+                            bin.name === deviceName
+                                ? bin.capacity !== capacity || bin.locked !== locked
                                     ? { ...bin, capacity, locked }
                                     : bin
                                 : bin
@@ -78,14 +77,14 @@ export default function Toggler() {
         );
     };
 
-    const toggleLock = (areaId: number, binId: number): void => {
+    const toggleLock = (areaName: string, binName: string): void => {
         setAreas(prevAreas =>
             prevAreas.map(area =>
-                area.id === areaId
+                area.name === areaName
                     ? {
                         ...area,
                         bins: area.bins.map(bin =>
-                            bin.id === binId ? { ...bin, locked: !bin.locked } : bin
+                            bin.name === binName ? { ...bin, locked: !bin.locked } : bin
                         )
                     }
                     : area
@@ -106,21 +105,21 @@ export default function Toggler() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {areas.map((area) => (
-                        <div key={area.id} className="card bg-base-100 shadow-xl">
+                        <div key={area.name} className="card bg-base-100 shadow-xl">
                             <div className="card-title p-4 bg-primary text-primary-content">
                                 <h2 className="text-xl">{area.name}</h2>
                             </div>
 
                             <div className="card-body p-4">
                                 {area.bins.map((bin) => (
-                                    <div key={bin.id} className="mb-4 p-4 border border-base-300 rounded-box hover:bg-base-200 transition">
+                                    <div key={bin.name} className="mb-4 p-4 border border-base-300 rounded-box hover:bg-base-200 transition">
                                         <div className="flex justify-between items-center mb-2">
                                             <div className="flex items-center">
                                                 <Trash2 className="mr-2" size={18} />
                                                 <span className="font-medium">{bin.name}</span>
                                             </div>
                                             <button
-                                                onClick={() => toggleLock(area.id, bin.id)}
+                                                onClick={() => toggleLock(area.name, bin.name)}
                                                 className={`btn btn-circle btn-sm ${bin.locked ? 'btn-error' : 'btn-success'}`}
                                             >
                                                 {bin.locked ? <Lock size={16} /> : <Unlock size={16} />}

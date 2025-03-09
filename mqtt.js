@@ -85,7 +85,18 @@ function saveLog(capacity, status, deviceName) {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      capacity, status, deviceName
+      capacity: convertToPercent(capacity),
+      status,
+      deviceName,
     }),
   })
 }
+
+
+
+function convertToPercent(capacity) {
+  const MAX_CAPA = 320;
+  const MIN_CAPA = 90;
+  const raw_value = (100 - ((capacity - MIN_CAPA) / (MAX_CAPA - MIN_CAPA)) * 100);
+  return Math.max(0, Math.min(100, raw_value));
+} 

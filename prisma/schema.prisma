@@ -33,10 +33,5 @@ model Log {
   node      Node           @relation(fields: [node_id], references: [id])
   timestamp DateTime
   capacity  Int
-  status    LockStatus
-}
-
-enum LockStatus {
-  LOCK
-  UNLOCK
+  status    Int
 }

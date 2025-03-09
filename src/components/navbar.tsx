@@ -1,6 +1,6 @@
 "use client"
 
-import { LayoutDashboard, SlidersHorizontal } from 'lucide-react'
+import { LayoutDashboard, Logs, SlidersHorizontal } from 'lucide-react'
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 
@@ -16,18 +16,21 @@ export default function Navbar() {
         }
     }, [])
 
-    const handleChangeTab = (tab: string)=> {
+    const handleChangeTab = (tab: string) => {
         setActive(tab);
         router.push(`/${tab}`)
-    } 
+    }
 
     return (
         <div className="btm-nav z-50">
-            <button onClick={()=> handleChangeTab("")} className={active === '' ? 'active' : ''}>
+            <button onClick={() => handleChangeTab("")} className={active === '' ? 'active' : ''}>
                 <LayoutDashboard />
             </button>
-            <button onClick={()=> handleChangeTab("management")} className={active === 'management' ? 'active' : ''}>
+            <button onClick={() => handleChangeTab("management")} className={active === 'management' ? 'active' : ''}>
                 <SlidersHorizontal />
+            </button>
+            <button onClick={() => handleChangeTab("logs")} className={active === 'logs' ? 'active' : ''}>
+                <Logs />
             </button>
         </div>
     )

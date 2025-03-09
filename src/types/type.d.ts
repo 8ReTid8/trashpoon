@@ -14,3 +14,14 @@ export type AreaBinDashboard = {
         locked: boolean;
     }[]
 }
+
+export type LogWithNodeArea = Prisma.LogGetPayload<{
+    include: { 
+        node: {
+            include: {
+                area: true
+            }
+        }
+    
+    }
+}>

@@ -3,6 +3,7 @@ import { Lock, Unlock, Trash2 } from 'lucide-react';
 import { useDashboardContext } from '@/utils/context/dashboardContext';
 import { AreaBinDashboard } from '@/types/type';
 import { subscribeToMqtt } from '@/utils/mqtt/subscribe';
+import convertToPercent from '@/utils/convertToPercent';
 
 export default function Toggler() {
     const data = useDashboardContext();
@@ -48,10 +49,14 @@ export default function Toggler() {
         try {
             const response = await fetch(`http://localhost:5175/latest-message?areaName=${areaName}&deviceName=${deviceName}`);
             const result = await response.json();
-
+            // console.log(result.message)
             if (result.message !== "No messages received yet") {
-                const { capacity, locked } = JSON.parse(result.message);
-                updateBinData(areaName, deviceName, capacity, locked);
+                const data = JSON.parse(result.message);
+                const locked = data.data.status === 1;
+                const capacity = data.data.capacity;
+                const percent = convertToPercent(capacity);
+
+                updateBinData(areaName, deviceName, percent, locked);
             }
         } catch (error) {
             console.error('Error fetching bin data:', error);
@@ -98,11 +103,23 @@ export default function Toggler() {
         return "progress-error";
     };
 
+    const wow = async () => {
+        fetch("/api/saveLog", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                wow: "poon"
+            }),
+        })
+    }
+
     return (
         <div className="min-h-screen bg-base-200 p-4">
             <div className="max-w-6xl mx-auto">
+                <button onClick={wow}>wow</button>
                 <h1 className="text-3xl font-bold mb-8 text-center">Trash Bin Management Dashboard</h1>
-
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {areas.map((area) => (
                         <div key={area.name} className="card bg-base-100 shadow-xl">

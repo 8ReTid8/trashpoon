@@ -10,9 +10,9 @@ app.use(cors());
 app.use(bodyParser.json());
 
 const options = {
-  clientId: 'd1bf2950-fc04-47ee-afe7-4dca3d0c14cd',
-  username: 'im8EvkKhNjCwiaNg3hMopSTBMQUp2431',
-  password: 'JDhRno2MQQGsyAy2wWSdRcQuYkZwgHdN'
+  clientId: process.env.CLIENT_ID,
+  username: process.env.CLIENT_USERNAME,
+  password: process.env.CLIENT_PASSWORD
 };
 
 const client = mqtt.connect('mqtt://broker.netpie.io:1883', options);
@@ -68,9 +68,24 @@ app.get('/latest-message', (req, res) => {
 
   const topic = `@msg/${areaName}/${deviceName}`;
   const message = latestMessages[topic] || 'No messages received yet';
+  
+  saveLog(message.data.capacity, message.data.status, deviceName)
   res.status(200).json({ topic, message });
 });
 
 app.listen(port, () => {
   console.log(`Response API listening at http://localhost:${port}`);
 });
+
+
+function saveLog(capacity, status, deviceName) {
+  fetch("/api/saveLog", {
+    method: "POST",
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      capacity, status, deviceName
+    }),
+  })
+}

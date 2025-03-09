@@ -9,8 +9,8 @@ export default function Navbar() {
     const router = useRouter();
     useEffect(() => {
         const currentPath = window.location.pathname
-        if (currentPath === '/dashboard') {
-            setActive('dashboard')
+        if (currentPath === '/') {
+            setActive('')
         } else {
             setActive('management')
         }
@@ -23,7 +23,7 @@ export default function Navbar() {
 
     return (
         <div className="btm-nav z-50">
-            <button onClick={()=> handleChangeTab("dashboard")} className={active === 'dashboard' ? 'active' : ''}>
+            <button onClick={()=> handleChangeTab("")} className={active === '' ? 'active' : ''}>
                 <LayoutDashboard />
             </button>
             <button onClick={()=> handleChangeTab("management")} className={active === 'management' ? 'active' : ''}>

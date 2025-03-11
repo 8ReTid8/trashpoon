@@ -10,9 +10,9 @@ app.use(cors());
 app.use(bodyParser.json());
 
 const options = {
-  clientId: process.env.CLIENT_ID,
-  username: process.env.CLIENT_USERNAME,
-  password: process.env.CLIENT_PASSWORD
+  clientId: "fb21da34-f7b0-4719-8c62-7372a12c35b7",
+  username: "yYfeyi9TUkx71C6wwzM1P37i5cg31WPN",
+  password: "kPE1jvLfBwcoTES9HTo2ZsMW5SneEQ97"
 };
 
 const client = mqtt.connect('mqtt://broker.netpie.io:1883', options);
@@ -35,6 +35,7 @@ app.post('/subscribe', (req, res) => {
   }
 
   const topic = `@msg/${areaName}/${deviceName}`;
+  console.log(topic)
   client.subscribe(topic, (err) => {
     if (err) {
       return res.status(500).json({ error: 'Subscription failed' });
@@ -68,8 +69,12 @@ app.get('/latest-message', (req, res) => {
 
   const topic = `@msg/${areaName}/${deviceName}`;
   const message = latestMessages[topic] || 'No messages received yet';
-  
-  saveLog(message.data.capacity, message.data.status, deviceName)
+
+  if (message !== "No messages received yet") {
+
+    const saveMSG = JSON.parse(message).data
+    saveLog(saveMSG.capacity, saveMSG.status, deviceName)
+  }
   res.status(200).json({ topic, message });
 });
 
@@ -79,7 +84,7 @@ app.listen(port, () => {
 
 
 function saveLog(capacity, status, deviceName) {
-  fetch("/api/saveLog", {
+  fetch("http://localhost:3000/api/saveLog", {
     method: "POST",
     headers: {
       'Content-Type': 'application/json',

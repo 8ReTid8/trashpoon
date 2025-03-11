@@ -1,4 +1,4 @@
--- CreateEnum
+y-- CreateEnum
 CREATE TYPE "LockStatus" AS ENUM ('LOCK', 'UNLOCK');
 
 -- CreateTable

@@ -52,9 +52,10 @@ export default function Toggler() {
             // console.log(result.message)
             if (result.message !== "No messages received yet") {
                 const data = JSON.parse(result.message);
-                const locked = data.data.status === 1;
+                const locked = data.data.status === 0;
+                console.log(locked)
                 const capacity = data.data.capacity;
-                const percent = convertToPercent(capacity);
+                const percent = Math.round(convertToPercent(capacity));
 
                 updateBinData(areaName, deviceName, percent, locked);
             }
@@ -118,7 +119,6 @@ export default function Toggler() {
     return (
         <div className="min-h-screen bg-base-200 p-4">
             <div className="max-w-6xl mx-auto">
-                <button onClick={wow}>wow</button>
                 <h1 className="text-3xl font-bold mb-8 text-center">Trash Bin Management Dashboard</h1>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {areas.map((area) => (

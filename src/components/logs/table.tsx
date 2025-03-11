@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { LogWithNodeArea } from "@/types/type"
 
@@ -18,14 +18,18 @@ export default function LogTable({ data }: { data: LogWithNodeArea[] }) {
                 </thead>
                 {data.length > 0 && (
                     <tbody>
-                        {data.map((row) => (
-                            <tr key={row.node.name}>
-                                <td>{row.timestamp.toDateString()}</td>
-                                <td>{row.node.area.name}</td>
-                                <td>{row.capacity}</td>
-                                <td>{row.status}</td>
-                            </tr>
-                        ))}
+                        {data.map((row, index) => {
+                            console.log(row)
+                            return (
+                                <tr key={index}>
+                                    <td>{row.timestamp.toDateString()}</td>
+                                    <td>{row.node.name}</td>
+                                    <td>{row.node.area.name}</td>
+                                    <td>{row.capacity}</td>
+                                    <td>{row.status}</td>
+                                </tr>
+                            )
+                        })}
                     </tbody>
                 )}
             </table>

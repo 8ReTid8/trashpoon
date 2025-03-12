@@ -10,10 +10,13 @@ export default async function LogsPage() {
                     area: true
                 }
             }
+        },
+        orderBy: {
+            timestamp : "desc"
         }
     }))
   return (
-    <div>
+    <div className="pb-15">
         <LogTable data={data} />
     </div>
   )

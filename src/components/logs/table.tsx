@@ -22,7 +22,7 @@ export default function LogTable({ data }: { data: LogWithNodeArea[] }) {
                             console.log(row)
                             return (
                                 <tr key={index}>
-                                    <td>{row.timestamp.toDateString()}</td>
+                                    <td>{row.timestamp.toLocaleString()}</td>
                                     <td>{row.node.name}</td>
                                     <td>{row.node.area.name}</td>
                                     <td>{row.capacity}</td>
